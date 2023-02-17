@@ -1,7 +1,10 @@
+const ContactsRepository = require('../repositories/ContactsRepository');
+
 class ContactController {
   // Listar todos os itens
-  index(request, response) {
-    response.send('Index Contact Controller');
+  async index(request, response) {
+    const contacts = await ContactsRepository.findAll();
+    response.json(contacts);
   }
 
   // Obter UM item
