@@ -8,8 +8,16 @@ class ContactController {
   }
 
   // Obter UM item
-  show() {
+  async show(request, response) {
+    const { id } = request.params;
 
+    const contact = await ContactsRepository.findById(id);
+
+    if (!contact) {
+      // 404 : Not found
+      return response.status(404).json({ error: 'User not found' });
+    }
+    response.json(contact);
   }
 
   // Criar um novo item
@@ -23,8 +31,20 @@ class ContactController {
   }
 
   // Excluir um item
-  delete() {
+  async delete(request, response) {
+    const { id } = request.params;
 
+    const contact = await ContactsRepository.findById(id);
+
+    if (!contact) {
+      // 404 : Not found
+      return response.status(404).json({ error: 'User not found' });
+    }
+    await ContactsRepository.delete(id);
+
+    // sendStatus - mandar o status sem body
+    // 204 : No Content - deu certo, mas não tem corpo
+    response.sendStatus(204);
   }
 }
 
