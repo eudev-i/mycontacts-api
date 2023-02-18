@@ -21,8 +21,28 @@ class ContactController {
   }
 
   // Criar um novo item
-  store() {
+  async store(request, response) {
+    const {
+      name, email, phone, category_id,
+    } = request.body;
 
+    if (!name) {
+      response.status(400).json({ error: 'Nome é obrigatório' });
+    }
+
+    // Verificando se existe um contato com o mesmo e-mail
+    const contactExists = await ContactsRepository.findByEmail(email);
+
+    // Erro se estiver em uso
+    if (contactExists) {
+      response.status(400).json({ error: 'O e-mail já está em uso' });
+    }
+
+    const contact = await ContactsRepository.create({
+      name, email, phone, category_id,
+    });
+
+    response.json(contact);
   }
 
   // Editar um item
