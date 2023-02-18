@@ -46,8 +46,37 @@ class ContactController {
   }
 
   // Editar um item
-  update() {
+  async update(request, response) {
+    const { id } = request.params;
+    const {
+      name, email, phone, category_id,
+    } = request.body;
 
+    // Verificando se o contato existe
+    const contactExists = await ContactsRepository.findById(id);
+
+    // Erro se não existir
+    if (!contactExists) {
+      response.status(404).json({ error: 'Usuário não existe' });
+    }
+
+    // Verificar se nome está vazio
+    if (!name) {
+      response.status(400).json({ error: 'Nome é obrigatório' });
+    }
+
+    const contactByEmail = await ContactsRepository.findByEmail(email);
+
+    // Erro se estiver em uso
+    if (contactByEmail && contactByEmail.id !== id) {
+      response.status(400).json({ error: 'O e-mail já está em uso' });
+    }
+
+    const contact = await ContactsRepository.update(id, {
+      name, email, phone, category_id,
+    });
+
+    response.json(contact);
   }
 
   // Excluir um item
