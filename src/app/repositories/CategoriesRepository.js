@@ -14,6 +14,15 @@ class CategoriesRepository {
     `, [name]);
     return row;
   }
+
+  async findById(id) {
+    const [row] = await db.query(`
+      SELECT *
+      FROM categories
+      WHERE id = $1
+    `, [id]);
+    return row;
+  }
 }
 
 module.exports = new CategoriesRepository();
