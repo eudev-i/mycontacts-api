@@ -32,6 +32,27 @@ class CategoryController {
     response.json(category);
   }
 
+  // Editar uma categoria
+  async update(request, response) {
+    const { id } = request.params;
+    const { name } = request.body;
+    const categoryExists = await CategoriesRepository.findById(id);
+
+    if (!categoryExists) {
+      return response.satus(404).json({ error: 'User not found' });
+    }
+
+    if (!name) {
+      return response.satus(404).json({ error: 'Nome é obrigatório' });
+    }
+
+    const category = await CategoriesRepository.update(id, { name });
+    // await CategoriesRepository.update(name);
+
+    response.json(category);
+  }
+
+  // Deletar uma categoria
   async delete(request, response) {
     const { id } = request.params;
     const category = await CategoriesRepository.findById(id);
